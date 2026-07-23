@@ -1,8 +1,15 @@
 import sys
+import os
 import random
 from PyQt5.QtCore import Qt, QPoint, QTimer, QRectF
 from PyQt5.QtGui import QPixmap, QFont, QColor, QPainter, QPainterPath, QPen
 from PyQt5.QtWidgets import QApplication, QWidget, QMenu, QAction
+
+def get_resource_path(relative_path):
+    """ 获取文件的绝对路径（兼容 PyInstaller 打包后的临时目录） """
+    if hasattr(sys, '_MEIPASS'):
+        return os.path.join(sys._MEIPASS, relative_path)
+    return os.path.join(os.path.abspath("."), relative_path)
 
 DIALOGUES = [
     "汪！今天也要开心哦！",
@@ -54,15 +61,21 @@ class SpeechBubble(QWidget):
         painter.drawText(rect, Qt.AlignCenter, self.text)
 
 class DesktopPet(QWidget):
-    def __init__(self, image_path="pet.png"):
+    def __init__(self, image_name="pet.png"):
         super().__init__()
 
         self.setWindowFlags(Qt.FramelessWindowHint | Qt.WindowStaysOnTopHint | Qt.Tool)
         self.setAttribute(Qt.WA_TranslucentBackground)
 
+        # 使用兼容路径加载图片
+        image_path = get_resource_path(image_name)
         self.original_pixmap = QPixmap(image_path)
+        
         if self.original_pixmap.isNull():
-            sys.exit()
+            # 备用方案：尝试在同级目录下寻找图片
+            self.original_pixmap = QPixmap(image_name)
+            if self.original_pixmap.isNull():
+                sys.exit(1)
 
         self.scale_factor = 0.25
         self.is_topmost = True
