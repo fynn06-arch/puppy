@@ -12,14 +12,14 @@ def get_resource_path(relative_path):
     return os.path.join(os.path.abspath("."), relative_path)
 
 DIALOGUES = [
-    "汪！今天也要开心哦！",
-    "不要一直摸人家啦~",
-    "你在偷懒对不对？",
-    "需要我陪你加班吗？",
-    "饿了，想吃小骨头！",
-    "晃得我头好晕呀~",
-    "干贴贴！快带我出去玩！",
-    "你是在拖拽我去哪里？"
+    "汪!",
+    "有没有想我！",
+    "又偷懒！",
+    "陪你加班",
+    "想吃肉肉！",
+    "想你！",
+    "贴贴！快带我出去玩！",
+    "去哪里？"
 ]
 
 class SpeechBubble(QWidget):
@@ -162,7 +162,7 @@ class DesktopPet(QWidget):
         if self.animation_step > 0:
             self.animation_step -= 1
 
-            if self.current_action == "jump":
+            if self.current_action == "shake":
                 progress = (30 - self.animation_step) / 30.0
                 if progress < 0.5:
                     self.offset_y = -40 * (progress * 2)
@@ -175,7 +175,7 @@ class DesktopPet(QWidget):
                 else:
                     self.squash_factor = 0.9 + (15 - self.animation_step) * 0.01
 
-            elif self.current_action == "shake":
+            elif self.current_action == "jump":
                 self.rotation = (self.animation_step % 4 - 2) * 4
 
             self.update()
